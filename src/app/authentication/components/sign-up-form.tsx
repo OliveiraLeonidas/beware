@@ -1,7 +1,9 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import z from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -22,14 +24,17 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { authClient } from "@/lib/auth-client";
 
 const formSchema = z
   .object({
-    name: z.string().min(1, "Nome é obrigatório"),
+    name: z
+      .string("O campo nome não pode deve ser preenchido")
+      .min(1, "Nome é obrigatório"),
     email: z.email("Digite um email válido").min(1, "Email é obrigatório"),
     password: z.string().min(8, "Senha deve ter pelo menos 8 caracteres"),
     passwordConfirmation: z
-      .string()
+      .string("Confirmação de senha é obrigatória")
       .min(8, "Confirmação de senha deve ter pelo menos 8 caracteres"),
   })
   .refine(
@@ -45,6 +50,7 @@ const formSchema = z
 type FormSchema = z.infer<typeof formSchema>;
 
 const SignUpForm = () => {
+  const router = useRouter();
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -55,12 +61,34 @@ const SignUpForm = () => {
     },
   });
 
-  const onSubmit = (values: FormSchema) => {
+  const onSubmit = async (values: FormSchema) => {
     console.log({
       name: values.name,
       email: values.email,
       password: values.password,
       passwordConfirmation: values.passwordConfirmation,
+    });
+
+    const { data, error } = await authClient.signUp.email({
+      email: values.email,
+      password: values.password,
+      name: values.name,
+      fetchOptions: {
+        onSuccess: () => {
+          router.push("/");
+        },
+        onError: (error) => {
+          if (error.error.code === "USER_ALREADY_EXISTS") {
+            toast.error("Email já cadastrado", {
+              position: "bottom-left",
+            });
+            form.setError("email", {
+              message: "Email já cadastrado",
+            });
+          }
+          //toast.error(error.error.message);
+        },
+      },
     });
   };
   return (
@@ -140,7 +168,9 @@ const SignUpForm = () => {
               />
             </CardContent>
             <CardFooter>
-              <Button type="submit">Criar conta</Button>
+              <Button className="cursor-pointer" type="submit">
+                Criar conta
+              </Button>
             </CardFooter>
           </form>
         </Form>
