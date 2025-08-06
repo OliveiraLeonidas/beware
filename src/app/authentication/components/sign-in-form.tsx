@@ -1,7 +1,9 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import z from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -22,6 +24,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { authClient } from "@/lib/auth-client";
 
 const formSchema = z.object({
   email: z.email("Digite um email válido").min(1, "Email é obrigatório"),
@@ -31,6 +34,7 @@ const formSchema = z.object({
 type FormSchema = z.infer<typeof formSchema>;
 
 const SignInForm = () => {
+  const router = useRouter();
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -39,10 +43,50 @@ const SignInForm = () => {
     },
   });
 
-  const onSubmit = (values: FormSchema) => {
+  const onSubmit = async (values: FormSchema) => {
     console.log({
       email: values.email,
       password: values.password,
+    });
+
+    await authClient.signIn.email({
+      email: values.email,
+      password: values.password,
+      fetchOptions: {
+        onSuccess: () => {
+          toast.success("Login realizado com sucesso!", {
+            position: "top-right",
+          });
+          router.push("/");
+        },
+        onError: (ctx) => {
+          console.log(ctx);
+          if (ctx.error.code === "USER_NOT_FOUND") {
+            toast.error("E-mail não encontrado", {
+              position: "top-right",
+            });
+            return form.setError("email", {
+              message: "Email ou senha inválidos",
+            });
+
+            toast.error(ctx.error.message, {
+              position: "top-right",
+            });
+          }
+          if (ctx.error.code === "INVALID_EMAIL_OR_PASSWORD") {
+            toast.error("E-mail ou senha inválidos", {
+              position: "top-right",
+            });
+            return form.setError("email", {
+              message: "Email ou senha inválidos",
+            });
+
+            toast.error(ctx.error.message, {
+              position: "top-right",
+            });
+          }
+        },
+      },
     });
   };
   return (

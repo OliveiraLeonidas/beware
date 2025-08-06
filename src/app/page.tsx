@@ -5,8 +5,8 @@ import Auth from "./authentication/page";
 
 export default function Home() {
   return (
-    <div className="">
-      <Auth />
+    <div>
+      <Button>e-com</Button>
     </div>
   );
 }
