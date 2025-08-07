@@ -1,0 +1,47 @@
+{
+  "brands": {
+    "1": {
+      "name": "adidas",
+      "path": "./icon_adidas.svg",
+      "width": 60,
+      "height": 40
+    },
+    "2": {
+      "name": "nike",
+      "path": "./icon_nike.svg",
+      "width": 60,
+      "height": 40
+    },
+    "3": {
+      "name": "puma",
+      "path": "./icon_puma.svg",
+      "width": 60,
+      "height": 40
+    },
+    "4": {
+      "name": "zara",
+      "path": "./icon_zara.svg",
+      "width": 60,
+      "height": 50
+    },
+    "5": {
+      "name": "converse",
+      "path": "./icon_converse.svg",
+      "width": 60,
+      "height": 40
+    },
+    "6": {
+      "name": "new balance",
+      "path": "./icon_newbalance.svg",
+      "width": 60,
+      "height": 40
+    },
+    "7": {
+      "name": "polo ralph lauren",
+      "path": "./icon_polo-ralph-lauren-black.svg",
+      "width": 40,
+      "height": 40
+    }
+
+    }
+  }

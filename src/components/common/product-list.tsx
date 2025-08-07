@@ -11,7 +11,7 @@ interface ProductListProps {
   })[];
 }
 
-export const ProductList = ({ title, products }: ProductListProps) => {
+const ProductList = ({ title, products }: ProductListProps) => {
   return (
     <div className="space-y-6">
       <h3 className="px-4 text-sm font-semibold md:text-xl">{title}</h3>
@@ -23,3 +23,5 @@ export const ProductList = ({ title, products }: ProductListProps) => {
     </div>
   );
 };
+
+export default ProductList;
