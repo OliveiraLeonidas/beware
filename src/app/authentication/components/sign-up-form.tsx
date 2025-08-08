@@ -62,13 +62,6 @@ const SignUpForm = () => {
   });
 
   const onSubmit = async (values: FormSchema) => {
-    console.log({
-      name: values.name,
-      email: values.email,
-      password: values.password,
-      passwordConfirmation: values.passwordConfirmation,
-    });
-
     const { data, error } = await authClient.signUp.email({
       email: values.email,
       password: values.password,

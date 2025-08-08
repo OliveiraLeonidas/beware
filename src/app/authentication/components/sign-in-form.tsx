@@ -44,11 +44,6 @@ const SignInForm = () => {
   });
 
   const onSubmit = async (values: FormSchema) => {
-    console.log({
-      email: values.email,
-      password: values.password,
-    });
-
     await authClient.signIn.email({
       email: values.email,
       password: values.password,
@@ -60,7 +55,6 @@ const SignInForm = () => {
           router.push("/");
         },
         onError: (ctx) => {
-          console.log(ctx);
           if (ctx.error.code === "USER_NOT_FOUND") {
             toast.error("E-mail não encontrado", {
               position: "top-right",

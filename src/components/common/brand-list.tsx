@@ -13,7 +13,6 @@ interface BrandListProps {
 }
 
 const BrandList = ({ title, brands }: BrandListProps) => {
-  console.log(brands);
   return (
     <div className="space-y-6">
       <h3 className="text-md px-4 font-semibold md:text-xl">{title}</h3>
