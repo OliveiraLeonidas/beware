@@ -9,6 +9,7 @@
     "lint": "next lint",
     "seed": "npx tsx --env-file=.env src/db/seeds.ts",
     "migrate": "npx drizzle-kit push",
+    "generate": "npx drizzle-kit generate",
     "studio": "npx drizzle-kit studio",
     "db:init": "npm run migrate && npm run seed"
   },

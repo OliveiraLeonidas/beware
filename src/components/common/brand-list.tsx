@@ -1,6 +1,5 @@
 import Image from "next/image";
 
-import { Button } from "../ui/button";
 interface IconItem {
   name: string;
   path: string;
