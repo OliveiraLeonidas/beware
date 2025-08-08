@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import type { categoryTable } from "@/db/schema";
 
 import { Button } from "../ui/button";
@@ -14,9 +16,9 @@ const CategorySelector = ({ categories }: CategorySelectorProps) => {
           <Button
             key={category.id}
             variant={"ghost"}
-            className="rounded-full bg-white text-xs font-semibold"
+            className="cursor-pointer rounded-full bg-white text-xs font-semibold"
           >
-            {category.name}{" "}
+            <Link href={`/category/${category.slug}`}>{category.name}</Link>
           </Button>
         ))}
       </div>
