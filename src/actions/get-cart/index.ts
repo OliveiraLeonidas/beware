@@ -13,13 +13,19 @@ export const getCart = async () => {
   if (!session?.user) {
     throw new Error("Unauthorized")
   }
-
+  // TODO: add totalPriceInCents in server side
+  // TODO: Add shipping price calculator
+  
   const cart = await db.query.cartTable.findFirst({
     where: (cart, { eq }) => eq(cart.userId, session.user.id),
     with: {
       items: {
         with: {
-          productVariant: true
+          productVariant: {
+            with: {
+              product: true
+            }
+          }
         }
       }
     }
@@ -30,9 +36,14 @@ export const getCart = async () => {
       userId: session.user.id
     }).returning()
     return { ...newCart,
-      items: []
+      items: [],
+      totalPriceInCents: 0
     };
   }
 
-  return cart;
+  return {
+    ...cart,
+    totalPriceInCents: cart.items.reduce(
+      (acc, item) => acc + item.productVariant.priceInCents * item.quantity, 0)
+  };
 };
