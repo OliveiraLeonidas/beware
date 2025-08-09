@@ -2,7 +2,7 @@ import { eq } from "drizzle-orm";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
-import QuantitySelector from "@/app/category/[slug]/components/quantitt-selector";
+import QuantitySelector from "@/app/category/[slug]/components/quantitty-selector";
 import Footer from "@/components/common/footer";
 import ProductList from "@/components/common/product-list";
 import VariantSelector from "@/components/common/variant-selector";

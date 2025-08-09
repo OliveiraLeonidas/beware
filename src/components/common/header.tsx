@@ -14,6 +14,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "../ui/sheet";
+import Cart from "./cart";
 
 const Header = () => {
   const { data: session, error, isPending, refetch } = authClient.useSession();
@@ -30,7 +31,8 @@ const Header = () => {
       <Link href="/">
         <Image width={80} height={60} src={"/logo.svg"} alt="Logo BEWARE" />
       </Link>
-      <div className="flex items-center">
+      <div className="flex items-center gap-4">
+        <Cart />
         <Sheet>
           <SheetTrigger asChild className="cursor-pointer">
             <Button variant="outline" size="icon">

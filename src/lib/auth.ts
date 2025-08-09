@@ -33,4 +33,7 @@ export const auth = betterAuth({
     verification: {
       modelName: "verificationTable"
     },
+    cart: {
+      modelName: "cartTable"
+    }
 });
