@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 
 import { db } from "@/db";
@@ -54,6 +55,8 @@ export async function addShippingAddress(input: AddShippingAddressInput) {
       cpfOrCnpj: cpf,
     })
     .returning();
+
+    revalidatePath("/cart/identification")
 
   return shippingAddress;
 }
