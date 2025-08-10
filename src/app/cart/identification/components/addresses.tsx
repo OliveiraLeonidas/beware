@@ -21,6 +21,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useAddShippingAddress } from "@/hooks/mutations/use-add-shipping-address";
+import { useShippingAddresses } from "@/hooks/queries/use-shipping-addresses";
 
 const formSchema = z.object({
   email: z.email("Email inválido"),
@@ -43,6 +44,8 @@ type FormValues = z.infer<typeof formSchema>;
 
 const Addresses = () => {
   const [selectedAddress, setSelectedAddress] = useState<string | null>(null);
+  const { data: addresses, isLoading: isLoadingAddresses } =
+    useShippingAddresses();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -87,7 +90,39 @@ const Addresses = () => {
             value={selectedAddress}
             onValueChange={setSelectedAddress}
           >
-            <Card>
+            {isLoadingAddresses ? (
+              <div className="text-muted-foreground text-sm">
+                Carregando endereços...
+              </div>
+            ) : addresses && addresses.length > 0 ? (
+              <>
+                {addresses.map((address) => (
+                  <Card key={address.id} className="mb-2">
+                    <CardContent>
+                      <div className="flex items-center gap-2">
+                        <RadioGroupItem value={address.id} id={address.id} />
+                        <Label
+                          htmlFor={address.id}
+                          className="flex w-full cursor-pointer flex-col items-start"
+                        >
+                          <p className="text-xs font-semibold">
+                            {address.recipientName}
+                            {address.street}, {address.number}
+                            {address.complement
+                              ? `, ${address.complement}`
+                              : ""}
+                            - {address.neighborhood}
+                            {address.city} - {address.state}, {address.zipCode}
+                          </p>
+                        </Label>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </>
+            ) : null}
+
+            <Card className="mb-2">
               <CardContent>
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="add_new" id="add_new" />
