@@ -5,6 +5,7 @@ import { ShoppingBasketIcon } from "lucide-react";
 
 import { getCart } from "@/actions/get-cart";
 import { formatCentsToBRL } from "@/helpers/money";
+import { useCart } from "@/hooks/queries/use-cart";
 
 import { Button } from "../ui/button";
 import { ScrollArea } from "../ui/scroll-area";
@@ -22,10 +23,8 @@ import CartItem from "./cart-items";
 
 const Cart = () => {
   // TODO: Refact component
-  const { data: cart, isPending: cartIsLoading } = useQuery({
-    queryKey: ["cart"],
-    queryFn: () => getCart(),
-  });
+  // TODO: handle cart listing when logout
+  const { data: cart } = useCart();
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -44,6 +43,7 @@ const Cart = () => {
                 <CartItem
                   key={item.id}
                   id={item.id}
+                  productVariantId={item.productVariant.id}
                   productName={item.productVariant.product.name}
                   productVariantName={item.productVariant.name}
                   productVariantImageUrl={item.productVariant.imageUrl}

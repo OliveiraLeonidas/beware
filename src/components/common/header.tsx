@@ -17,7 +17,7 @@ import {
 import Cart from "./cart";
 
 const Header = () => {
-  const { data: session, error, isPending, refetch } = authClient.useSession();
+  const { data: session } = authClient.useSession();
 
   const getFirstAndLastName = (name: string | undefined) => {
     if (!name) return "";
@@ -32,7 +32,8 @@ const Header = () => {
         <Image width={80} height={60} src={"/logo.svg"} alt="Logo BEWARE" />
       </Link>
       <div className="flex items-center gap-4">
-        <Cart />
+        {/* TODO: use props to send session to cart component */}
+        {!session?.user ? <></> : <Cart />}
         <Sheet>
           <SheetTrigger asChild className="cursor-pointer">
             <Button variant="outline" size="icon">

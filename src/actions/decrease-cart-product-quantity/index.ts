@@ -11,7 +11,7 @@ import { auth } from "@/lib/auth"
 import { decreaseCartProductQuantitySchema  } from "./schema"
 
 
-export const removeProductFromCart = async (data: z.infer<typeof decreaseCartProductQuantitySchema>) => {
+export const decreaseCartProductQuantity = async (data: z.infer<typeof decreaseCartProductQuantitySchema>) => {
   decreaseCartProductQuantitySchema.parse(data);
 
   const session = await auth.api.getSession({
