@@ -22,6 +22,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { shippingAddressTable } from "@/db/schema";
 import { useAddShippingAddress } from "@/hooks/mutations/use-add-shipping-address";
+import { useUpdateCartShippingAddress } from "@/hooks/mutations/use-update-cart-shipping-address";
 import { useShippingAddresses } from "@/hooks/queries/use-shipping-addresses";
 
 const formSchema = z.object({
@@ -51,6 +52,7 @@ const Addresses = ({ shippingAddresses }: AddressesProps) => {
   const [selectedAddress, setSelectedAddress] = useState<string | null>(null);
   const { data: addresses, isLoading: isLoadingAddresses } =
     useShippingAddresses({ initialData: shippingAddresses });
+  const updateCartShippingAddressMutation = useUpdateCartShippingAddress();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -73,10 +75,27 @@ const Addresses = ({ shippingAddresses }: AddressesProps) => {
 
   const onSubmit = async (data: FormValues) => {
     try {
-      await addShippingAddressMutation.mutateAsync(data);
+      const result = await addShippingAddressMutation.mutateAsync(data);
       toast.success("Endereço adicionado com sucesso!");
+
+      await updateCartShippingAddressMutation.mutateAsync({
+        shippingAddressId: result.id,
+      });
       form.reset();
       setSelectedAddress(null);
+    } catch (error) {
+      toast.error("Erro ao adicionar endereço. Tente novamente.");
+      console.error(error);
+    }
+  };
+
+  const handleGoToPayment = async () => {
+    if (!selectedAddress || selectedAddress === "add_new") return;
+
+    try {
+      await updateCartShippingAddressMutation.mutate({
+        shippingAddressId: selectedAddress,
+      });
     } catch (error) {
       toast.error("Erro ao adicionar endereço. Tente novamente.");
       console.error(error);
@@ -136,6 +155,18 @@ const Addresses = ({ shippingAddresses }: AddressesProps) => {
               </CardContent>
             </Card>
           </RadioGroup>
+
+          {selectedAddress && selectedAddress !== "add_new" && (
+            <Button
+              onClick={handleGoToPayment}
+              className="mt-4 w-full"
+              disabled={updateCartShippingAddressMutation.isPending}
+            >
+              {updateCartShippingAddressMutation.isPending
+                ? "Processando..."
+                : "Ir para pagamento"}
+            </Button>
+          )}
 
           {selectedAddress === "add_new" && (
             <Form {...form}>
