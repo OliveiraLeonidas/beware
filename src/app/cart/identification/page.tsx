@@ -3,9 +3,10 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { db } from "@/db";
-import { cartTable, shippingAddressTable } from "@/db/schema";
+import { shippingAddressTable } from "@/db/schema";
 import { auth } from "@/lib/auth";
 
+import CartSummary from "../components/cart-summary";
 import Addresses from "./components/addresses";
 
 const IdentificationPage = async () => {
@@ -39,11 +40,28 @@ const IdentificationPage = async () => {
   const addresses = await db.query.shippingAddressTable.findMany({
     where: eq(shippingAddressTable.userId, session.user.id),
   });
+
+  const totalPriceInCents = cart.items.reduce(
+    (acc, item) => acc + item.productVariant.priceInCents * item.quantity,
+    0,
+  );
   return (
     <div className="px-4">
       <Addresses
         shippingAddresses={addresses}
         defaultShippingAddressId={cart.shippingAddress?.id || null}
+      />
+      <CartSummary
+        products={cart.items.map((item) => ({
+          id: item.productVariant.id,
+          name: item.productVariant.product.name,
+          variantName: item.productVariant.name,
+          imageUrl: item.productVariant.imageUrl,
+          quantity: item.quantity,
+          priceIncents: item.productVariant.priceInCents,
+        }))}
+        subtotalInCents={totalPriceInCents}
+        totalInCents={totalPriceInCents}
       />
     </div>
   );
