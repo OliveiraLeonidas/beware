@@ -1,7 +1,10 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { MinusIcon, PlusIcon, TrashIcon } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { toast } from "sonner";
 
+import { addProductToCart } from "@/actions/add-cart-products";
+import { removeProductFromCart } from "@/actions/remove-cart-product";
 import { formatCentsToBRL } from "@/helpers/money";
 
 import { Button } from "../ui/button";
@@ -9,6 +12,7 @@ import { Button } from "../ui/button";
 interface CartItemProps {
   id: string;
   productName: string;
+  productVariantId: string;
   productVariantName: string;
   productVariantImageUrl: string;
   productVariantPriceInCents: number;
@@ -18,20 +22,64 @@ interface CartItemProps {
 const CartItem = ({
   id,
   productName,
+  productVariantId,
   productVariantName,
   productVariantImageUrl,
   productVariantPriceInCents,
   quantity,
 }: CartItemProps) => {
-  // const [quantity, setQuantity] = useState<number>(1);
+  const queryClient = useQueryClient();
+  console.log({ cartItemId: id });
+  const removeProductFromCartMutation = useMutation({
+    mutationKey: ["remove-cart-product"],
+    mutationFn: () => removeProductFromCart({ cartItemId: id }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
+    },
+  });
+  const decreaseCartProductQuantityMutation = useMutation({
+    mutationKey: ["decrease-cart-product-quantity"],
+    mutationFn: () => removeProductFromCart({ cartItemId: id }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
+    },
+  });
 
-  // const handleIncrement = () => {
-  //   setQuantity((prev) => (prev < 99 ? prev + 1 : prev));
-  // };
+  const increaseCartProductQuantityMutation = useMutation({
+    mutationKey: ["addProductToCart", productVariantId, quantity],
+    mutationFn: () => addProductToCart({ productVariantId, quantity: 1 }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
+    },
+  });
 
-  // const handleDecrement = () => {
-  //   setQuantity((prev) => (prev > 1 ? prev - 1 : prev));
-  // };
+  const handleDeleteClick = () => {
+    removeProductFromCartMutation.mutate(undefined, {
+      onSuccess: () => {
+        toast.success("Produto removido do carrinho");
+      },
+      onError: () => {
+        toast.error("Erro ao remover produto");
+      },
+    });
+  };
+
+  const handleDecreaseClick = () => {
+    decreaseCartProductQuantityMutation.mutate(undefined, {
+      onSuccess: () => {
+        toast.success("Quantidade do produto diminuida.");
+      },
+    });
+  };
+
+  const handleIncreaseClick = () => {
+    increaseCartProductQuantityMutation.mutate(undefined, {
+      onSuccess: () => {
+        toast.success("Produto adicionado.");
+      },
+    });
+  };
+
   return (
     <div className="mb-4 flex items-center justify-between">
       <div className="flex w-full items-center gap-4">
@@ -50,21 +98,21 @@ const CartItem = ({
           <p className="text-muted-foreground text-xs">{productVariantName}</p>
 
           <div className="mt-3 flex h-[40px] w-[134px] items-center justify-between rounded-lg">
-            <Button variant={"ghost"} onClick={() => {}}>
+            <Button variant={"ghost"} onClick={handleDeleteClick}>
               <TrashIcon />
             </Button>
-            <Button variant={"ghost"} onClick={() => {}}>
+            <Button variant={"ghost"} onClick={handleDecreaseClick}>
               <MinusIcon />
             </Button>
             <p className="px-2 text-xs">{quantity}</p>
-            <Button variant={"ghost"} onClick={() => {}}>
+            <Button variant={"ghost"} onClick={handleIncreaseClick}>
               <PlusIcon />
             </Button>
           </div>
         </div>
 
         <div className="self-end">
-          <p className="w-3 font-bold">
+          <p className="font-bold">
             {formatCentsToBRL(productVariantPriceInCents)}{" "}
           </p>
         </div>
