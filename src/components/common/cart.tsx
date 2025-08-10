@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { ShoppingBasketIcon } from "lucide-react";
+import Link from "next/link";
 
 import { getCart } from "@/actions/get-cart";
 import { formatCentsToBRL } from "@/helpers/money";
@@ -76,7 +77,7 @@ const Cart = () => {
               </div>
               <Separator />
               <Button size={"lg"} className="rounded-full">
-                Finalizar a compra
+                <Link href="/cart/identification">Finalizar a compra</Link>
               </Button>
               <Separator />
               <Button
