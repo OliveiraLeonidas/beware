@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { PatternFormat } from "react-number-format";
@@ -79,6 +80,7 @@ const Addresses = ({
   });
 
   const addShippingAddressMutation = useAddShippingAddress();
+  const router = useRouter();
 
   const onSubmit = async (data: FormValues) => {
     try {
@@ -103,6 +105,7 @@ const Addresses = ({
       await updateCartShippingAddressMutation.mutate({
         shippingAddressId: selectedAddress,
       });
+      router.push("/cart/confirmation");
     } catch (error) {
       toast.error("Erro ao adicionar endereço. Tente novamente.");
       console.error(error);
