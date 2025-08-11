@@ -17,7 +17,7 @@
 /.next/
 /out/
 /public/*.identifier
-README.md
+.README.md
 
 # production
 /build

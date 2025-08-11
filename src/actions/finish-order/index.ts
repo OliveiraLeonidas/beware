@@ -1,7 +1,6 @@
 "use server"
 
 import { eq } from "drizzle-orm"
-import { revalidatePath } from "next/cache"
 import { headers } from "next/headers"
 
 import { db } from "@/db"
@@ -39,6 +38,7 @@ if (!cart.shippingAddress) {
 
   const totalPriceInCents = cart.items.reduce((acc, item) => acc + item.productVariant.priceInCents * item.quantity, 0)
 
+  let orderId: string | undefined;
   await db.transaction(async (tx) => {
     console.log("iniciou transaction")
     if (!cart.shippingAddress) {
@@ -73,12 +73,16 @@ console.log("criou o pedido")
       quantity: item.quantity,
       priceInCents: item.productVariant.priceInCents
     }))
+
+    orderId = order.id;
   console.log("criou os items do pedido")
   await tx.insert(orderItemTable).values(orderItemsPayload)
   await tx.delete(cartTable).where(eq(cartTable.id, cart.id))
   await tx.delete(cartItemTable).where(eq(cartItemTable.cartId, cart.id))
   console.log("Foi deletado com sucesso")
   })
-  //revalidatePath("/cart/identification")
-  //revalidatePath("/cart/confirmation")
+
+  return {
+    orderId
+  }
 }
