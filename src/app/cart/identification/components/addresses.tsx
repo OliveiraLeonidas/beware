@@ -8,7 +8,6 @@ import { PatternFormat } from "react-number-format";
 import { toast } from "sonner";
 import { z } from "zod";
 
-import type { getCart } from "@/actions/get-cart";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -102,7 +101,7 @@ const Addresses = ({
     if (!selectedAddress || selectedAddress === "add_new") return;
 
     try {
-      await updateCartShippingAddressMutation.mutate({
+      await updateCartShippingAddressMutation.mutateAsync({
         shippingAddressId: selectedAddress,
       });
       router.push("/cart/confirmation");
@@ -134,10 +133,14 @@ const Addresses = ({
                   <Card key={address.id} className="mb-2">
                     <CardContent>
                       <div className="flex items-center gap-2">
-                        <RadioGroupItem value={address.id} id={address.id} />
+                        <RadioGroupItem
+                          className="cursor-pointer"
+                          value={address.id}
+                          id={address.id}
+                        />
                         <Label
                           htmlFor={address.id}
-                          className="flex w-full cursor-pointer flex-col items-start"
+                          className="flex w-full flex-col items-start"
                         >
                           <p className="text-xs font-semibold">
                             {address.recipientName}
@@ -159,7 +162,11 @@ const Addresses = ({
             <Card className="mb-2">
               <CardContent>
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="add_new" id="add_new" />
+                  <RadioGroupItem
+                    className="cursor-pointer"
+                    value="add_new"
+                    id="add_new"
+                  />
                   <Label htmlFor="add_new">Adicionar novo endereço</Label>
                 </div>
               </CardContent>
@@ -169,7 +176,7 @@ const Addresses = ({
           {selectedAddress && selectedAddress !== "add_new" && (
             <Button
               onClick={handleGoToPayment}
-              className="mt-4 w-full"
+              className="mt-4 w-full cursor-pointer"
               disabled={updateCartShippingAddressMutation.isPending}
             >
               {updateCartShippingAddressMutation.isPending

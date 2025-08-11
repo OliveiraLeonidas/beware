@@ -14,7 +14,7 @@ export function useUpdateCartShippingAddress() {
 
   return useMutation({
     mutationKey: getUpdateCartShippingAddressMutationKey(),
-    mutationFn: (data: UpdateCartShippingAddressType) => updateCartShippingAddress(data),
+    mutationFn: async (data: UpdateCartShippingAddressType) => updateCartShippingAddress(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: getUseCartQueryKey() })
     },

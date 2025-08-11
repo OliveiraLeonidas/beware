@@ -76,7 +76,11 @@ const Cart = () => {
                 </p>
               </div>
               <Separator />
-              <Button size={"lg"} className="rounded-full">
+              <Button
+                size={"lg"}
+                className="cursor-pointer rounded-full"
+                asChild
+              >
                 <Link href="/cart/identification">Finalizar a compra</Link>
               </Button>
               <Separator />

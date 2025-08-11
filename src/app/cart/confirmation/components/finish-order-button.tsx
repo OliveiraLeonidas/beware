@@ -2,6 +2,8 @@
 import { DialogTitle } from "@radix-ui/react-dialog";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -14,12 +16,19 @@ import { useFinishOrder } from "@/hooks/mutations/use-finish-order";
 
 const FinishOrderButton = () => {
   const finishOrderMutation = useFinishOrder();
+  const [successDialogIsOpen, setSuccessDialogIsOpen] = useState(false);
+
+  const handleFinishOrder = () => {
+    finishOrderMutation.mutate();
+    setSuccessDialogIsOpen(true);
+  };
+
   return (
     <>
       <Button
-        className="w-full rounded-full"
+        className="w-full cursor-pointer rounded-full"
         disabled={finishOrderMutation.isPending}
-        onClick={() => finishOrderMutation.mutate()}
+        onClick={handleFinishOrder}
       >
         {finishOrderMutation.isPending && (
           <Loader2 className="h-4 w-4 animate-spin" />
@@ -27,11 +36,11 @@ const FinishOrderButton = () => {
         Finalizar compra
       </Button>
 
-      <Dialog>
+      <Dialog open={successDialogIsOpen} onOpenChange={setSuccessDialogIsOpen}>
         <DialogContent className="text-center">
           <Image
             alt="success"
-            src={"/illustration.svg"}
+            src="/illustration.svg"
             width={300}
             height={300}
             className="mx-auto"
@@ -46,8 +55,13 @@ const FinishOrderButton = () => {
             <Button className="rouded-full" size="lg">
               Ver meus pedidos
             </Button>
-            <Button className="rouded-full" size="lg" variant={"outline"}>
-              Voltar para a loja
+            <Button
+              asChild
+              className="rouded-full"
+              size="lg"
+              variant={"outline"}
+            >
+              <Link href={"/"}>Voltar para a loja</Link>
             </Button>
           </DialogFooter>
         </DialogContent>

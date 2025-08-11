@@ -5,7 +5,7 @@ import { finishOrder } from "@/actions/finish-order"
 
 import { getUseCartQueryKey } from "../queries/use-cart"
 
-export const getUseFinishOrderMutationKey = () => ["finish-order"] as const
+export const getUseFinishOrderMutationKey = () => ["finish-order"]
 
 export const useFinishOrder = () => {
   const queryClient = useQueryClient()
@@ -13,11 +13,11 @@ export const useFinishOrder = () => {
   return useMutation({
     mutationKey: getUseFinishOrderMutationKey(),
     mutationFn: async () => {
-      await finishOrder()
+      finishOrder()
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: getUseCartQueryKey() })
-      toast.success("Compra finalizada com sucesso")
+      toast.success("Compra finalizada com sucesso", { position: "top-center" })
     }
   })
 }
