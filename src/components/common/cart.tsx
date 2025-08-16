@@ -1,10 +1,10 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { log } from "node:console";
+
 import { ShoppingBasketIcon } from "lucide-react";
 import Link from "next/link";
 
-import { getCart } from "@/actions/get-cart";
 import { formatCentsToBRL } from "@/helpers/money";
 import { useCart } from "@/hooks/queries/use-cart";
 
@@ -23,8 +23,6 @@ import CartItem from "./cart-items";
 // Client side fetching
 
 const Cart = () => {
-  // TODO: Refact component
-  // TODO: handle cart listing when logout
   const { data: cart } = useCart();
   return (
     <Sheet>

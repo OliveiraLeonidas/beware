@@ -2,6 +2,7 @@
 import { LogInIcon, LogOutIcon, MenuIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 
 import { authClient } from "@/lib/auth-client";
 
@@ -18,6 +19,7 @@ import Cart from "./cart";
 
 const Header = () => {
   const { data: session } = authClient.useSession();
+  const [isOpenMenu, setIsOpenMenu] = useState(false);
 
   const getFirstAndLastName = (name: string | undefined) => {
     if (!name) return "";
@@ -33,9 +35,13 @@ const Header = () => {
       </Link>
       <div className="flex items-center gap-4">
         {/* TODO: use props to send session to cart component */}
-        {!session?.user ? <></> : <Cart />}
-        <Sheet>
-          <SheetTrigger asChild className="cursor-pointer">
+        <Cart />
+        <Sheet open={isOpenMenu} onOpenChange={setIsOpenMenu}>
+          <SheetTrigger
+            asChild
+            className="cursor-pointer"
+            onClick={() => setIsOpenMenu(true)}
+          >
             <Button variant="outline" size="icon">
               <MenuIcon />
             </Button>
@@ -82,7 +88,12 @@ const Header = () => {
                   <h2 className="text-md font-semibold">
                     Olá. Faça seu login!
                   </h2>
-                  <Button size="icon" asChild variant="outline">
+                  <Button
+                    size="icon"
+                    asChild
+                    variant="outline"
+                    onClick={() => setIsOpenMenu(false)}
+                  >
                     <Link href="/authentication">
                       <LogInIcon />
                     </Link>
