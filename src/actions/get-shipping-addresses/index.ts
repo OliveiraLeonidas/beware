@@ -5,6 +5,7 @@ import { headers } from "next/headers";
 
 import { db } from "@/db";
 import { shippingAddressTable } from "@/db/schema";
+import { NotFound } from "@/errors/user-not-found-error";
 import { auth } from "@/lib/auth";
 
 export async function getShippingAddresses() {
@@ -13,7 +14,8 @@ export async function getShippingAddresses() {
   });
   
   if (!session?.user?.id) {
-    throw new Error("Você precisa estar logado para ver seus endereços");
+    throw new NotFound()
+    //throw new Error("Você precisa estar logado para ver seus endereços");
   }
 
   const addresses = await db.query.shippingAddressTable.findMany({

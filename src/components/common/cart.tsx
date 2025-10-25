@@ -1,7 +1,4 @@
 "use client";
-
-import { log } from "node:console";
-
 import { ShoppingBasketIcon } from "lucide-react";
 import Link from "next/link";
 
@@ -19,8 +16,6 @@ import {
   SheetTrigger,
 } from "../ui/sheet";
 import CartItem from "./cart-items";
-
-// Client side fetching
 
 const Cart = () => {
   const { data: cart } = useCart();

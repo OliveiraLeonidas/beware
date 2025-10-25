@@ -9,6 +9,7 @@ export const useCart = (params?: { initialData?: Awaited<ReturnType<typeof getCa
  return useQuery({
     queryKey: getUseCartQueryKey(),
     queryFn: () => getCart(),
-    initialData: params?.initialData
+    initialData: params?.initialData,
+    enabled: !!params
   });
 }
